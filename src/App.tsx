@@ -1,4 +1,6 @@
 import React from 'react';
+import TimelineBlock from "./components/time-line-block/timline-block";
+import {timelineData} from "./components/time-line-block/data";
 
 const App: React.FC = () => {
 
@@ -12,8 +14,8 @@ const App: React.FC = () => {
     ];
 
     return (
-        <div>
-            <h1>Timeline Block Demo вааващш</h1>
+        <div className="container">
+            <TimelineBlock periods={timelineData} />
         </div>
     );
 };

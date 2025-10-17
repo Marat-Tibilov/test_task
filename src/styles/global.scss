@@ -1,0 +1,44 @@
+
+$primary-color: #3877EE;
+$text-color: #42567A;
+$accent-color: #EF5DA8;
+$border-color: rgba(66, 86, 122, 0.1);
+$background-color: #F4F5F9;
+
+// Размеры
+$container-width: 1440px;
+$mobile-breakpoint: 768px;
+
+// Шрифты
+$font-family: 'PT Sans', sans-serif;
+
+// Миксины для адаптива
+@mixin mobile {
+  @media (max-width: #{$mobile-breakpoint}) {
+    @content;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  color: $text-color;
+  background-color: $background-color;
+  line-height: 1.6;
+}
+
+
+.container {
+  max-width: $container-width;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  @include mobile {
+    padding: 0 15px;
+  }
+}
