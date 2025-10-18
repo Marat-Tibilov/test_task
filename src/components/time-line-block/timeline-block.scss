@@ -1,3 +1,4 @@
+// timeline-block.scss
 $primary-color: #3877ee;
 $accent-color: #ef5da8;
 $text-color: #42567a;
@@ -14,19 +15,21 @@ $bg: #f4f5f9;
   justify-content: flex-start;
   overflow: hidden;
   font-family: "PT Sans", sans-serif;
+  padding: 0 40px;
 }
 
-/* Линии */
+/* Тонкие серые линии */
 .cross-lines {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  overflow: hidden;
 
   &::before,
   &::after {
     content: "";
     position: absolute;
-    background: rgba(66, 86, 122, 0.2);
+    background: rgba(66, 86, 122, 0.15);
   }
 
   &::before {
@@ -34,7 +37,6 @@ $bg: #f4f5f9;
     height: 100%;
     left: 50%;
     top: 0;
-    transform: translateX(-50%);
   }
 
   &::after {
@@ -42,20 +44,38 @@ $bg: #f4f5f9;
     width: 100%;
     top: 50%;
     left: 0;
-    transform: translateY(-50%);
   }
 }
 
 /* Заголовок */
 .timeline-title {
   position: absolute;
-  top: 40px; /* было 60px — подняли выше */
-  left: 80px;
-  font-size: 64px;
+  top: 70px;
+  left: 70px;
+  font-size: 56px;
   font-weight: 700;
   line-height: 1.1;
   color: $text-color;
   text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -14px;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient($primary-color, $accent-color);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 40px;
+    left: 40px;
+  }
 }
 
 /* Круг */
@@ -63,19 +83,23 @@ $bg: #f4f5f9;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -48%); /* подняли выше (-40% → -48%) */
-  width: 420px;
-  height: 420px;
+  transform: translate(-50%, -50%);
+  width: 440px;
+  height: 440px;
   border-radius: 50%;
   border: 1px solid rgba(66, 86, 122, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0;
   z-index: 3;
+
+  @media (max-width: 900px) {
+    width: 320px;
+    height: 320px;
+  }
 }
 
-/* Года */
+/* Года с прозрачностью */
 .dynamic-years {
   position: absolute;
   top: 50%;
@@ -84,14 +108,16 @@ $bg: #f4f5f9;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 120px;
+  gap: 160px;
   z-index: 5;
 
   .year-start,
   .year-end {
-    font-size: 130px;
+    font-size: 140px;
     font-weight: 700;
     line-height: 1;
+    will-change: transform, opacity;
+    opacity: 0.7;
   }
 
   .year-start {
@@ -101,62 +127,107 @@ $bg: #f4f5f9;
   .year-end {
     color: $accent-color;
   }
+
+  @media (max-width: 900px) {
+    gap: 80px;
+    .year-start,
+    .year-end {
+      font-size: 90px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    gap: 50px;
+    .year-start,
+    .year-end {
+      font-size: 64px;
+    }
+  }
 }
 
-/* Точки */
+/* Контейнер для точек */
+.circle-points-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  z-index: 4;
+
+  @media (max-width: 900px) {
+    width: 360px;
+    height: 360px;
+  }
+}
+
+/* Точки как в макете - маленькие серые кружки */
 .circle-point {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: rgba(66, 86, 122, 0.3);
+  background: rgba(66, 86, 122, 0.5);
+  transform: translate(-50%, -50%);
   border: none;
   cursor: pointer;
-  transform: translate(-50%, -50%);
   transition: all 0.3s ease;
   z-index: 10;
 
+  /* Активная точка - просто становится больше и остается серой */
   &.active {
-    background: $primary-color;
-    width: 32px;
-    height: 32px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
+    width: 12px;
+    height: 12px;
+    background: rgba(66, 86, 122, 0.8);
+    box-shadow: 0 0 0 8px rgba(56, 119, 238, 0.1);
   }
 
+  /* Ховер - подсветка */
   &:hover {
     background: $primary-color;
+    transform: translate(-50%, -50%) scale(1.2);
   }
 }
 
-/* Нижняя часть */
+/* Нижняя секция */
 .bottom-section {
   position: absolute;
-  bottom: 60px;
+  bottom: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  width: 80%;
-  max-width: 1200px;
+  gap: 20px;
+  width: 85%;
+  max-width: 1400px;
+  z-index: 10;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    width: 90%;
+    bottom: 40px;
+  }
 }
 
 .timeline-swiper {
   width: 80%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
+/* События */
 .event-item {
   .event-year {
     color: $primary-color;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .event-description {
     color: $text-color;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1.5;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -178,68 +249,21 @@ $bg: #f4f5f9;
   align-items: center;
   justify-content: center;
   transition: 0.3s;
+  cursor: pointer;
 
   &:hover:not(:disabled) {
     background: $primary-color;
     color: white;
+    border-color: $primary-color;
   }
 
   &:disabled {
     opacity: 0.3;
+    cursor: not-allowed;
   }
 }
 
-/* … предыдущие стили … */
-
-.circle-wrap {
-  position: absolute;
-  top: 48%;    /* подняли чуть выше */
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 440px;    /* чуть больше */
-  height: 440px;
-  border-radius: 50%;
-  border: 1px solid rgba(66, 86, 122, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-}
-
-.dynamic-years {
-  position: absolute;
-  top: 45%;       /* подняли годы выше центра круга */
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 140px;
-
-  .year-start,
-  .year-end {
-    font-size: 140px;
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .year-start {
-    color: $primary-color;
-  }
-  .year-end {
-    color: $accent-color;
-  }
-}
-
-/* Нижний блок адаптивно растягиваем */
-.bottom-section {
-  position: absolute;
-  bottom: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  width: 90%;        /* растянули до ~90% экрана */
-  max-width: 1400px; /* лимит максимально */
+/* Убираем горизонтальный скролл */
+html, body {
+  overflow-x: hidden;
 }

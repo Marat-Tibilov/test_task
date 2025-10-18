@@ -13,7 +13,7 @@ interface Period {
 const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const circleRef = useRef<HTMLDivElement | null>(null);
-    const [radius, setRadius] = useState(0);
+    const [radius, setRadius] = useState(220);
 
     useEffect(() => {
         if (!circleRef.current) return;
@@ -21,19 +21,15 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
         setRadius(r);
     }, []);
 
-    useEffect(() => {
-        gsap.fromTo(
-            ".dynamic-years",
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
-        );
-    }, [activeIndex]);
-
     const current = periods[activeIndex];
 
-    const getPosition = (i: number, total: number, r: number) => {
-        const angle = (i * (360 / total) - 90) * (Math.PI / 180);
-        return { x: Math.cos(angle) * r, y: Math.sin(angle) * r };
+    // Позиции точек на круге
+    const getPointPosition = (index: number, total: number, r: number) => {
+        const angle = (index * (360 / total) - 90) * (Math.PI / 180);
+        return {
+            x: Math.cos(angle) * r,
+            y: Math.sin(angle) * r
+        };
     };
 
     return (
@@ -50,22 +46,24 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                     <span className="year-start">{current.startYear}</span>
                     <span className="year-end">{current.endYear}</span>
                 </div>
+            </div>
 
-                {periods.map((_, i) => {
-                    const pos = getPosition(i, periods.length, radius - 10);
-                    const active = i === activeIndex;
+            {/* Точки на круге */}
+            <div className="circle-points-container">
+                {periods.map((_, index) => {
+                    const pos = getPointPosition(index, periods.length, radius);
+                    const isActive = index === activeIndex;
+
                     return (
                         <button
-                            key={i}
-                            className={`circle-point ${active ? "active" : ""}`}
+                            key={index}
+                            className={`circle-point ${isActive ? "active" : ""}`}
                             style={{
                                 left: `calc(50% + ${pos.x}px)`,
                                 top: `calc(50% + ${pos.y}px)`,
                             }}
-                            onClick={() => setActiveIndex(i)}
-                        >
-                            {active ? <span>{i + 1}</span> : ""}
-                        </button>
+                            onClick={() => setActiveIndex(index)}
+                        />
                     );
                 })}
             </div>
@@ -80,7 +78,11 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                     &lt;
                 </button>
 
-                <Swiper spaceBetween={60} slidesPerView={3} className="timeline-swiper">
+                <Swiper
+                    spaceBetween={60}
+                    slidesPerView={3}
+                    className="timeline-swiper"
+                >
                     {current.events.map((e, i) => (
                         <SwiperSlide key={i}>
                             <div className="event-item">
@@ -93,9 +95,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
 
                 <button
                     className="nav-btn small right"
-                    onClick={() =>
-                        setActiveIndex((p) => Math.min(p + 1, periods.length - 1))
-                    }
+                    onClick={() => setActiveIndex((p) => Math.min(p + 1, periods.length - 1))}
                     disabled={activeIndex === periods.length - 1}
                 >
                     &gt;

@@ -6,7 +6,7 @@ const App: React.FC = () => {
 
 
     return (
-        <div className="container">
+        <div>
             <TimelineBlock periods={timelineData} />
         </div>
     );
