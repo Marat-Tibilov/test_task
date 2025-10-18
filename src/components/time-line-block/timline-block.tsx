@@ -1,118 +1,126 @@
-import React, { useState } from 'react';
-import { TimelinePeriod } from './types';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import './timeline-block.scss';
+import React, { useEffect, useRef, useState } from "react";
+import { TimelinePeriod } from "./types";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "./timeline-block.scss";
+import gsap from "gsap";
 
 interface TimelineBlockProps {
     periods: TimelinePeriod[];
     title?: string;
 }
 
-const TimelineBlock: React.FC<TimelineBlockProps> = ({
-                                                         periods,
-                                                         title = "Исторические даты"
-                                                     }) => {
+const TimelineBlock: React.FC<TimelineBlockProps> = ({  periods,   title = "Исторические даты" }) => {
     const [currentPeriodIndex, setCurrentPeriodIndex] = useState(0);
     const currentPeriod = periods[currentPeriodIndex];
+    const yearsRef = useRef<HTMLDivElement | null>(null);
+    const circleRef = useRef<HTMLDivElement | null>(null);
+    const [radius, setRadius] = useState(0);
 
-    const handlePeriodChange = (index: number) => {
-        setCurrentPeriodIndex(index);
+    // вычисляем радиус
+    useEffect(() => {
+        const calcRadius = () => {
+            if (!circleRef.current) return;
+            const rect = circleRef.current.getBoundingClientRect();
+            setRadius(Math.min(rect.width, rect.height) / 2 - 40);
+        };
+        calcRadius();
+        window.addEventListener("resize", calcRadius);
+        return () => window.removeEventListener("resize", calcRadius);
+    }, []);
+
+    // анимация годов при смене
+    useEffect(() => {
+        if (yearsRef.current) {
+            gsap.fromTo(
+                yearsRef.current,
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+            );
+        }
+    }, [currentPeriodIndex]);
+
+    const getCirclePointPosition = (
+        index: number,
+        total: number,
+        r: number
+    ) => {
+        const angle = index * (360 / total) - 90;
+        const rad = (angle * Math.PI) / 180;
+        return { x: Math.cos(rad) * r, y: Math.sin(rad) * r };
     };
 
-    // Рассчитываем позицию точки на круге
-    const getCirclePointPosition = (index: number, total: number, radius: number) => {
-        const angle = (index * 360) / total;
-        const radian = ((angle - 90) * Math.PI) / 180; // начинаем с верха
-        const x = Math.cos(radian) * radius;
-        const y = Math.sin(radian) * radius;
-        return { x, y };
-    };
+    const handleNext = () =>
+        setCurrentPeriodIndex((prev) =>
+            prev < periods.length - 1 ? prev + 1 : prev
+        );
 
-    // Рассчитываем прогресс
-    const progress = ((currentPeriodIndex + 1) / periods.length) * 100;
+    const handlePrev = () =>
+        setCurrentPeriodIndex((prev) => (prev > 0 ? prev - 1 : prev));
+
+    const handleClickPoint = (index: number) => setCurrentPeriodIndex(index);
 
     return (
         <div className="timeline-block">
-            <div className="timeline-header">
-                <h2>{title}</h2>
-                <div className="total-years">
-                    {periods[0].startYear} - {periods[periods.length - 1].endYear}
+            <h2 className="timeline-title">{title}</h2>
+
+            <div className="circle-wrap" ref={circleRef}>
+                <div className="dynamic-years" ref={yearsRef}>
+                    <span className="year-start">{currentPeriod.startYear}</span>
+                    <span className="divider"> — </span>
+                    <span className="year-end">{currentPeriod.endYear}</span>
                 </div>
+
+                {periods.map((_, i) => {
+                    const pos = getCirclePointPosition(i, periods.length, radius);
+                    const isActive = i === currentPeriodIndex;
+                    return (
+                        <button
+                            key={i}
+                            className={`circle-point ${isActive ? "active" : ""}`}
+                            style={{
+                                left: `calc(50% + ${pos.x}px)`,
+                                top: `calc(50% + ${pos.y}px)`,
+                            }}
+                            onClick={() => handleClickPoint(i)}
+                        >
+                            {isActive ? <span>{i + 1}</span> : ""}
+                        </button>
+                    );
+                })}
             </div>
 
-            <div className="timeline-main">
-                <div className="timeline-controls">
-                    <div className="timeline-circle">
-                        {/* Центральные года */}
-                        <div className="center-years">
-                            <div className="current-period">
-                                {currentPeriod.startYear} - {currentPeriod.endYear}
+            <div className="bottom-section">
+                <button
+                    className="nav-btn small left"
+                    onClick={handlePrev}
+                    disabled={currentPeriodIndex === 0}
+                >
+                    &lt;
+                </button>
+
+                <Swiper
+                    spaceBetween={40}
+                    slidesPerView={3}
+                    className="timeline-swiper"
+                >
+                    {currentPeriod.events.map((event, i) => (
+                        <SwiperSlide key={i}>
+                            <div className="event-item">
+                                <div className="event-year">{event.year}</div>
+                                <div className="event-description">{event.description}</div>
                             </div>
-                            <div className="progress">{Math.round(progress)}%</div>
-                        </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
 
-                        {/* Точки на круге */}
-                        {periods.map((period, index) => {
-                            const position = getCirclePointPosition(index, periods.length, 160);
-                            const isActive = index === currentPeriodIndex;
-
-                            return (
-                                <div
-                                    key={index}
-                                    className={`circle-point ${isActive ? 'active' : ''}`}
-                                    style={{
-                                        left: `calc(50% + ${position.x}px)`,
-                                        top: `calc(50% + ${position.y}px)`,
-                                    }}
-                                    onClick={() => handlePeriodChange(index)}
-                                >
-                                    <div className="point-line"></div>
-                                    <div className="point-number">{index + 1}</div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                <div className="timeline-content">
-                    <div className="slider-container">
-                        <Swiper
-                            modules={[Navigation, Pagination]}
-                            spaceBetween={80}
-                            slidesPerView={1.5}
-                            navigation={{
-                                nextEl: '.swiper-button-next',
-                                prevEl: '.swiper-button-prev',
-                            }}
-                            pagination={{
-                                clickable: true,
-                                el: '.swiper-pagination'
-                            }}
-                        >
-                            {currentPeriod.events.map((event, index) => (
-                                <SwiperSlide key={index}>
-                                    <div className="event-slide">
-                                        <div className="event-year">{event.year}</div>
-                                        <div className="event-description">{event.description}</div>
-                                    </div>
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
-
-                        {/* Кастомная навигация */}
-                        <div className="swiper-navigation">
-                            <div className="swiper-pagination"></div>
-                            <div className="swiper-buttons">
-                                <button className="swiper-button-prev">←</button>
-                                <button className="swiper-button-next">→</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <button
+                    className="nav-btn small right"
+                    onClick={handleNext}
+                    disabled={currentPeriodIndex === periods.length - 1}
+                >
+                    &gt;
+                </button>
             </div>
         </div>
     );
