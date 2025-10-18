@@ -161,32 +161,94 @@ $bg: #f4f5f9;
   }
 }
 
-/* Точки как в макете - маленькие серые кружки */
+/* Точки через псевдоэлементы - идеально круглые */
+/* Точки через псевдоэлементы - с заливкой */
 .circle-point {
   position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(66, 86, 122, 0.5);
   transform: translate(-50%, -50%);
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  background: none;
   z-index: 10;
 
-  /* Активная точка - просто становится больше и остается серой */
-  &.active {
-    width: 12px;
-    height: 12px;
-    background: rgba(66, 86, 122, 0.8);
-    box-shadow: 0 0 0 8px rgba(56, 119, 238, 0.1);
+  /* Базовая точка через псевдоэлемент */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+
+    /* Заливка черно-синяя */
+    background: linear-gradient(45deg, #303E58, #42567a);
+    box-shadow: inset 0 0 0 1px rgba(48, 62, 88, 0.5);
+    transition: all 0.3s ease;
   }
 
-  /* Ховер - подсветка */
-  &:hover {
-    background: $primary-color;
-    transform: translate(-50%, -50%) scale(1.2);
+  /* Ховер эффект */
+  &:hover::before {
+    width: 56px;
+    height: 56px;
+    background: white;
+    box-shadow: 0 0 0 1px $primary-color, 0 0 10px rgba(56, 119, 238, 0.3);
   }
+
+  &:hover::after {
+    content: attr(data-number);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: $primary-color;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: "PT Sans", sans-serif;
+  }
+
+  /* Активная точка */
+  &.active::before {
+    width: 56px;
+    height: 56px;
+    background: white;
+    box-shadow: 0 0 0 1px $primary-color, 0 0 10px rgba(56, 119, 238, 0.3);
+  }
+
+  &.active::after {
+    content: attr(data-number);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: $primary-color;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: "PT Sans", sans-serif;
+  }
+}
+
+/* Многоточие для текста событий */
+.event-description {
+  color: $text-color;
+  font-size: 18px;
+  line-height: 1.5;
+
+  /* Многоточие для длинного текста */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Альтернативный вариант для однострочного текста */
+.truncate-single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 /* Нижняя секция */

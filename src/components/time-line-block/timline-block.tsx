@@ -62,6 +62,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                                 left: `calc(50% + ${pos.x}px)`,
                                 top: `calc(50% + ${pos.y}px)`,
                             }}
+                            data-number={index + 1}
                             onClick={() => setActiveIndex(index)}
                         />
                     );
