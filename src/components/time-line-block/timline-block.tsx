@@ -23,7 +23,6 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
 
     const current = periods[activeIndex];
 
-    // Позиции точек на круге
     const getPointPosition = (index: number, total: number, r: number) => {
         const angle = (index * (360 / total) - 90) * (Math.PI / 180);
         return {
@@ -32,15 +31,19 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
         };
     };
 
+    const allEvents = periods.flatMap(period => period.events);
+
     return (
         <div className="timeline-block">
-            <div className="cross-lines" />
+            <div className="cross-lines">
+                <div className="vertical-left"></div>
+                <div className="vertical-right"></div>
+            </div>
 
             <h2 className="timeline-title">
                 исторические <br /> даты
             </h2>
 
-            {/* Центральный круг */}
             <div className="circle-wrap" ref={circleRef}>
                 <div className="dynamic-years">
                     <span className="year-start">{current.startYear}</span>
@@ -48,7 +51,6 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                 </div>
             </div>
 
-            {/* Точки на круге */}
             <div className="circle-points-container">
                 {periods.map((_, index) => {
                     const pos = getPointPosition(index, periods.length, radius);
@@ -69,7 +71,6 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                 })}
             </div>
 
-            {/* Нижняя секция */}
             <div className="bottom-section">
                 <button
                     className="nav-btn small left"
@@ -84,11 +85,11 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                     slidesPerView={3}
                     className="timeline-swiper"
                 >
-                    {current.events.map((e, i) => (
-                        <SwiperSlide key={i}>
+                    {allEvents.map((event, index) => (
+                        <SwiperSlide key={index}>
                             <div className="event-item">
-                                <div className="event-year">{e.year}</div>
-                                <div className="event-description">{e.description}</div>
+                                <div className="event-year">{event.year}</div>
+                                <div className="event-description">{event.description}</div>
                             </div>
                         </SwiperSlide>
                     ))}

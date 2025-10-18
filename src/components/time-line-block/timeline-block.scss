@@ -7,7 +7,7 @@ $bg: #f4f5f9;
 .timeline-block {
   position: relative;
   height: 100vh;
-  width: 100%;
+  width: 90%;
   background: $bg;
   display: flex;
   flex-direction: column;
@@ -15,15 +15,14 @@ $bg: #f4f5f9;
   justify-content: flex-start;
   overflow: hidden;
   font-family: "PT Sans", sans-serif;
-  padding: 0 40px;
+  padding: 0 80px;
 }
 
-/* Тонкие серые линии */
+/* Тонкие серые линии - ФИКСИМ Горизонтальную и Правую */
 .cross-lines {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  overflow: hidden;
 
   &::before,
   &::after {
@@ -32,26 +31,50 @@ $bg: #f4f5f9;
     background: rgba(66, 86, 122, 0.15);
   }
 
+  /* Центральная вертикальная линия */
   &::before {
     width: 1px;
     height: 100%;
     left: 50%;
     top: 0;
+    transform: translateX(-50%);
   }
 
+  /* Горизонтальная линия - ФИКС: НЕ ВЫХОДИТ ЗА БОКОВЫЕ ЛИНИИ */
   &::after {
     height: 1px;
-    width: 100%;
+    width: calc(100% - 160px); /* 100% минус левый и правый padding */
     top: 50%;
-    left: 0;
+    left: 80px; /* Начинается от левой линии */
+  }
+
+  /* Левая боковая линия */
+  .vertical-left {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    left: 80px;
+    top: 0;
+    background: rgba(66, 86, 122, 0.15);
+  }
+
+  /* Правая боковая линия - ФИКС: ТОЧНО ВИДНА */
+  .vertical-right {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    right: 80px;
+    top: 0;
+    background: rgba(66, 86, 122, 0.15);
+    z-index: 9999; /* На всякий случай поверх всего */
   }
 }
 
-/* Заголовок */
+/* Остальные стили без изменений */
 .timeline-title {
   position: absolute;
-  top: 70px;
-  left: 70px;
+  top: 97px;
+  left: 80px;
   font-size: 56px;
   font-weight: 700;
   line-height: 1.1;
@@ -60,25 +83,20 @@ $bg: #f4f5f9;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding-left: 20px;
 
   &::before {
     content: "";
     position: absolute;
-    left: -14px;
+    left: 0;
     top: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient($primary-color, $accent-color);
+    width: 5px;
+    height: 120px;
+    background: linear-gradient(to bottom, $primary-color, $accent-color);
     border-radius: 2px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 40px;
-    left: 40px;
   }
 }
 
-/* Круг */
 .circle-wrap {
   position: absolute;
   top: 50%;
@@ -92,14 +110,8 @@ $bg: #f4f5f9;
   align-items: center;
   justify-content: center;
   z-index: 3;
-
-  @media (max-width: 900px) {
-    width: 320px;
-    height: 320px;
-  }
 }
 
-/* Года с прозрачностью */
 .dynamic-years {
   position: absolute;
   top: 50%;
@@ -127,42 +139,18 @@ $bg: #f4f5f9;
   .year-end {
     color: $accent-color;
   }
-
-  @media (max-width: 900px) {
-    gap: 80px;
-    .year-start,
-    .year-end {
-      font-size: 90px;
-    }
-  }
-
-  @media (max-width: 600px) {
-    gap: 50px;
-    .year-start,
-    .year-end {
-      font-size: 64px;
-    }
-  }
 }
 
-/* Контейнер для точек */
 .circle-points-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
-  height: 500px;
+  width: 440px;
+  height: 440px;
   z-index: 4;
-
-  @media (max-width: 900px) {
-    width: 360px;
-    height: 360px;
-  }
 }
 
-/* Точки через псевдоэлементы - идеально круглые */
-/* Точки через псевдоэлементы - с заливкой */
 .circle-point {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -171,7 +159,6 @@ $bg: #f4f5f9;
   background: none;
   z-index: 10;
 
-  /* Базовая точка через псевдоэлемент */
   &::before {
     content: '';
     position: absolute;
@@ -181,14 +168,11 @@ $bg: #f4f5f9;
     width: 6px;
     height: 6px;
     border-radius: 50%;
-
-    /* Заливка черно-синяя */
-    background: linear-gradient(45deg, #303E58, #42567a);
-    box-shadow: inset 0 0 0 1px rgba(48, 62, 88, 0.5);
+    background: #303E58;
+    box-shadow: inset 0 0 0 1px rgba(48, 62, 88, 0.8);
     transition: all 0.3s ease;
   }
 
-  /* Ховер эффект */
   &:hover::before {
     width: 56px;
     height: 56px;
@@ -208,7 +192,6 @@ $bg: #f4f5f9;
     font-family: "PT Sans", sans-serif;
   }
 
-  /* Активная точка */
   &.active::before {
     width: 56px;
     height: 56px;
@@ -229,29 +212,6 @@ $bg: #f4f5f9;
   }
 }
 
-/* Многоточие для текста событий */
-.event-description {
-  color: $text-color;
-  font-size: 18px;
-  line-height: 1.5;
-
-  /* Многоточие для длинного текста */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Альтернативный вариант для однострочного текста */
-.truncate-single-line {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-}
-
-/* Нижняя секция */
 .bottom-section {
   position: absolute;
   bottom: 50px;
@@ -259,26 +219,15 @@ $bg: #f4f5f9;
   align-items: center;
   justify-content: center;
   gap: 20px;
-  width: 85%;
+  width: calc(100% - 160px);
   max-width: 1400px;
   z-index: 10;
-
-  @media (max-width: 900px) {
-    flex-direction: column;
-    width: 90%;
-    bottom: 40px;
-  }
 }
 
 .timeline-swiper {
-  width: 80%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  width: 100%;
 }
 
-/* События */
 .event-item {
   .event-year {
     color: $primary-color;
@@ -298,7 +247,6 @@ $bg: #f4f5f9;
   }
 }
 
-/* Кнопки */
 .nav-btn.small {
   width: 36px;
   height: 36px;
@@ -325,7 +273,9 @@ $bg: #f4f5f9;
   }
 }
 
-/* Убираем горизонтальный скролл */
 html, body {
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: $bg;
 }
