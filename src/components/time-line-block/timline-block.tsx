@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "./timeline-block.scss";
 import gsap from "gsap";
+import "./timeline-block.scss";
 
 interface Period {
     startYear: number;
@@ -16,21 +16,16 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
     const [radius, setRadius] = useState(0);
 
     useEffect(() => {
-        const resize = () => {
-            if (!circleRef.current) return;
-            const r = circleRef.current.offsetWidth / 2;
-            setRadius(r);
-        };
-        resize();
-        window.addEventListener("resize", resize);
-        return () => window.removeEventListener("resize", resize);
+        if (!circleRef.current) return;
+        const r = circleRef.current.offsetWidth / 2;
+        setRadius(r);
     }, []);
 
     useEffect(() => {
         gsap.fromTo(
             ".dynamic-years",
             { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
         );
     }, [activeIndex]);
 
@@ -49,6 +44,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                 исторические <br /> даты
             </h2>
 
+            {/* Центральный круг */}
             <div className="circle-wrap" ref={circleRef}>
                 <div className="dynamic-years">
                     <span className="year-start">{current.startYear}</span>
@@ -74,6 +70,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                 })}
             </div>
 
+            {/* Нижняя секция */}
             <div className="bottom-section">
                 <button
                     className="nav-btn small left"
@@ -83,7 +80,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                     &lt;
                 </button>
 
-                <Swiper spaceBetween={40} slidesPerView={3} className="timeline-swiper">
+                <Swiper spaceBetween={60} slidesPerView={3} className="timeline-swiper">
                     {current.events.map((e, i) => (
                         <SwiperSlide key={i}>
                             <div className="event-item">

@@ -11,12 +11,12 @@ $bg: #f4f5f9;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   overflow: hidden;
   font-family: "PT Sans", sans-serif;
 }
 
-/* Центральные линии */
+/* Линии */
 .cross-lines {
   position: absolute;
   inset: 0;
@@ -49,56 +49,67 @@ $bg: #f4f5f9;
 /* Заголовок */
 .timeline-title {
   position: absolute;
-  top: 40px;
-  left: 60px;
-  font-size: 56px;
+  top: 40px; /* было 60px — подняли выше */
+  left: 80px;
+  font-size: 64px;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.1;
   color: $text-color;
   text-transform: uppercase;
 }
 
 /* Круг */
 .circle-wrap {
-  position: relative;
-  width: 400px;
-  height: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%); /* подняли выше (-40% → -48%) */
+  width: 420px;
+  height: 420px;
   border-radius: 50%;
   border: 1px solid rgba(66, 86, 122, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 60px;
+  margin-bottom: 0;
+  z-index: 3;
 }
 
-/* Динамические года */
+/* Года */
 .dynamic-years {
   position: absolute;
-  text-align: center;
-  font-size: 96px;
-  font-weight: 700;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 120px;
   z-index: 5;
-  pointer-events: none;
-  line-height: 1;
+
+  .year-start,
+  .year-end {
+    font-size: 130px;
+    font-weight: 700;
+    line-height: 1;
+  }
 
   .year-start {
     color: $primary-color;
-    margin-right: 16px;
   }
 
   .year-end {
     color: $accent-color;
-    margin-left: 16px;
   }
 }
 
-/* Точки по окружности */
+/* Точки */
 .circle-point {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: rgba(66, 86, 122, 0.4);
+  background: rgba(66, 86, 122, 0.3);
   border: none;
   cursor: pointer;
   transform: translate(-50%, -50%);
@@ -121,12 +132,14 @@ $bg: #f4f5f9;
 
 /* Нижняя часть */
 .bottom-section {
+  position: absolute;
+  bottom: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 900px;
+  gap: 16px;
+  width: 80%;
+  max-width: 1200px;
 }
 
 .timeline-swiper {
@@ -136,15 +149,15 @@ $bg: #f4f5f9;
 .event-item {
   .event-year {
     color: $primary-color;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   .event-description {
     color: $text-color;
-    font-size: 18px;
-    line-height: 1.4;
+    font-size: 20px;
+    line-height: 1.5;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     display: -webkit-box;
@@ -174,4 +187,59 @@ $bg: #f4f5f9;
   &:disabled {
     opacity: 0.3;
   }
+}
+
+/* … предыдущие стили … */
+
+.circle-wrap {
+  position: absolute;
+  top: 48%;    /* подняли чуть выше */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 440px;    /* чуть больше */
+  height: 440px;
+  border-radius: 50%;
+  border: 1px solid rgba(66, 86, 122, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.dynamic-years {
+  position: absolute;
+  top: 45%;       /* подняли годы выше центра круга */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 140px;
+
+  .year-start,
+  .year-end {
+    font-size: 140px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .year-start {
+    color: $primary-color;
+  }
+  .year-end {
+    color: $accent-color;
+  }
+}
+
+/* Нижний блок адаптивно растягиваем */
+.bottom-section {
+  position: absolute;
+  bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 90%;        /* растянули до ~90% экрана */
+  max-width: 1400px; /* лимит максимально */
 }
