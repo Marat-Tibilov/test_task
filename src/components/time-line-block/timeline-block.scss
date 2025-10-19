@@ -219,26 +219,30 @@ $bg: #f4f5f9;
   align-items: center;
   justify-content: center;
   gap: 20px;
-  width: calc(100% - 160px);
-  max-width: 1400px;
+
+  width: 90%; /* было calc(100% - 160px) */
+  max-width: 1140px; /* немного уже */
+  margin: 0 auto;
+
   z-index: 10;
 }
 
 .timeline-swiper {
   width: 100%;
+  max-width: 950px; /* уменьшили ширину самого контента */
 }
 
 .event-item {
   .event-year {
     color: $primary-color;
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 700;
     margin-bottom: 8px;
   }
 
   .event-description {
     color: $text-color;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.5;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -279,3 +283,5 @@ html, body {
   padding: 0;
   background-color: $bg;
 }
+
+

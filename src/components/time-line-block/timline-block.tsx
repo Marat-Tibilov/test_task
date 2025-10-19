@@ -13,6 +13,7 @@ interface Period {
 const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const circleRef = useRef<HTMLDivElement | null>(null);
+    const swiperRef = useRef<any>(null);
     const [radius, setRadius] = useState(220);
 
     useEffect(() => {
@@ -27,11 +28,11 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
         const angle = (index * (360 / total) - 90) * (Math.PI / 180);
         return {
             x: Math.cos(angle) * r,
-            y: Math.sin(angle) * r
+            y: Math.sin(angle) * r,
         };
     };
 
-    const allEvents = periods.flatMap(period => period.events);
+    const allEvents = periods.flatMap((period) => period.events);
 
     return (
         <div className="timeline-block">
@@ -74,8 +75,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
             <div className="bottom-section">
                 <button
                     className="nav-btn small left"
-                    onClick={() => setActiveIndex((p) => Math.max(p - 1, 0))}
-                    disabled={activeIndex === 0}
+                    onClick={() => swiperRef.current?.slidePrev()}
                 >
                     &lt;
                 </button>
@@ -84,6 +84,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                     spaceBetween={60}
                     slidesPerView={3}
                     className="timeline-swiper"
+                    onSwiper={(swiper) => (swiperRef.current = swiper)}
                 >
                     {allEvents.map((event, index) => (
                         <SwiperSlide key={index}>
@@ -97,8 +98,7 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
 
                 <button
                     className="nav-btn small right"
-                    onClick={() => setActiveIndex((p) => Math.min(p + 1, periods.length - 1))}
-                    disabled={activeIndex === periods.length - 1}
+                    onClick={() => swiperRef.current?.slideNext()}
                 >
                     &gt;
                 </button>
