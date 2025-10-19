@@ -15,12 +15,24 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
     const circleRef = useRef<HTMLDivElement | null>(null);
     const swiperRef = useRef<any>(null);
     const [radius, setRadius] = useState(220);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     useEffect(() => {
         if (!circleRef.current) return;
         const r = circleRef.current.offsetWidth / 2;
-        setRadius(r);
-    }, []);
+        setRadius(isMobile ? 140 : 220);
+    }, [isMobile]);
 
     const current = periods[activeIndex];
 
@@ -81,8 +93,8 @@ const TimelineBlock: React.FC<{ periods: Period[] }> = ({ periods }) => {
                 </button>
 
                 <Swiper
-                    spaceBetween={60}
-                    slidesPerView={3}
+                    spaceBetween={isMobile ? 20 : 60}
+                    slidesPerView={isMobile ? 1.5 : 3}
                     className="timeline-swiper"
                     onSwiper={(swiper) => (swiperRef.current = swiper)}
                 >

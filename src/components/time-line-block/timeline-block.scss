@@ -16,9 +16,15 @@ $bg: #f4f5f9;
   overflow: hidden;
   font-family: "PT Sans", sans-serif;
   padding: 0 80px;
+
+  /* Мобильная версия */
+  @media (max-width: 767px) {
+    width: 100%;
+    padding: 0 20px;
+  }
 }
 
-/* Тонкие серые линии - ФИКСИМ Горизонтальную и Правую */
+/* Тонкие серые линии */
 .cross-lines {
   position: absolute;
   inset: 0;
@@ -38,17 +44,28 @@ $bg: #f4f5f9;
     left: 50%;
     top: 0;
     transform: translateX(-50%);
+
+    /* Скрыть на мобилке */
+    @media (max-width: 767px) {
+      display: none;
+    }
   }
 
-  /* Горизонтальная линия - ФИКС: НЕ ВЫХОДИТ ЗА БОКОВЫЕ ЛИНИИ */
+  /* Горизонтальная линия */
   &::after {
     height: 1px;
-    width: calc(100% - 160px); /* 100% минус левый и правый padding */
+    width: calc(100% - 160px);
     top: 50%;
-    left: 80px; /* Начинается от левой линии */
+    left: 80px;
+
+    /* Адаптив для мобилки */
+    @media (max-width: 767px) {
+      width: calc(100% - 40px);
+      left: 20px;
+      top: 40%;
+    }
   }
 
-  /* Левая боковая линия */
   .vertical-left {
     position: absolute;
     width: 1px;
@@ -56,9 +73,12 @@ $bg: #f4f5f9;
     left: 80px;
     top: 0;
     background: rgba(66, 86, 122, 0.15);
+
+    @media (max-width: 767px) {
+      left: 20px;
+    }
   }
 
-  /* Правая боковая линия - ФИКС: ТОЧНО ВИДНА */
   .vertical-right {
     position: absolute;
     width: 1px;
@@ -66,11 +86,13 @@ $bg: #f4f5f9;
     right: 80px;
     top: 0;
     background: rgba(66, 86, 122, 0.15);
-    z-index: 9999; /* На всякий случай поверх всего */
+
+    @media (max-width: 767px) {
+      right: 20px;
+    }
   }
 }
 
-/* Остальные стили без изменений */
 .timeline-title {
   position: absolute;
   top: 97px;
@@ -95,6 +117,19 @@ $bg: #f4f5f9;
     background: linear-gradient(to bottom, $primary-color, $accent-color);
     border-radius: 2px;
   }
+
+  /* Мобильная версия */
+  @media (max-width: 767px) {
+    top: 60px;
+    left: 20px;
+    font-size: 32px;
+    padding-left: 15px;
+
+    &::before {
+      width: 4px;
+      height: 80px;
+    }
+  }
 }
 
 .circle-wrap {
@@ -110,6 +145,12 @@ $bg: #f4f5f9;
   align-items: center;
   justify-content: center;
   z-index: 3;
+
+  @media (max-width: 767px) {
+    width: 280px;
+    height: 280px;
+    top: 35%;
+  }
 }
 
 .dynamic-years {
@@ -139,6 +180,16 @@ $bg: #f4f5f9;
   .year-end {
     color: $accent-color;
   }
+
+  @media (max-width: 767px) {
+    gap: 80px;
+    top: 35%;
+
+    .year-start,
+    .year-end {
+      font-size: 56px;
+    }
+  }
 }
 
 .circle-points-container {
@@ -149,6 +200,12 @@ $bg: #f4f5f9;
   width: 440px;
   height: 440px;
   z-index: 4;
+
+  @media (max-width: 767px) {
+    width: 280px;
+    height: 280px;
+    top: 35%;
+  }
 }
 
 .circle-point {
@@ -210,6 +267,24 @@ $bg: #f4f5f9;
     font-weight: 700;
     font-family: "PT Sans", sans-serif;
   }
+
+  @media (max-width: 767px) {
+    &::before {
+      width: 4px;
+      height: 4px;
+    }
+
+    &:hover::before,
+    &.active::before {
+      width: 40px;
+      height: 40px;
+    }
+
+    &:hover::after,
+    &.active::after {
+      font-size: 16px;
+    }
+  }
 }
 
 .bottom-section {
@@ -219,17 +294,25 @@ $bg: #f4f5f9;
   align-items: center;
   justify-content: center;
   gap: 20px;
-
-  width: 90%; /* было calc(100% - 160px) */
-  max-width: 1140px; /* немного уже */
+  width: calc(100% - 160px);
+  max-width: 1140px;
   margin: 0 auto;
-
   z-index: 10;
+
+  @media (max-width: 767px) {
+    bottom: 30px;
+    gap: 15px;
+    width: calc(100% - 40px);
+  }
 }
 
 .timeline-swiper {
   width: 100%;
-  max-width: 950px; /* уменьшили ширину самого контента */
+  max-width: 950px;
+
+  @media (max-width: 767px) {
+    max-width: none;
+  }
 }
 
 .event-item {
@@ -248,6 +331,18 @@ $bg: #f4f5f9;
     -webkit-box-orient: vertical;
     display: -webkit-box;
     overflow: hidden;
+  }
+
+  @media (max-width: 767px) {
+    .event-year {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .event-description {
+      font-size: 14px;
+      line-height: 1.4;
+    }
   }
 }
 
@@ -275,6 +370,12 @@ $bg: #f4f5f9;
     opacity: 0.3;
     cursor: not-allowed;
   }
+
+  @media (max-width: 767px) {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
 }
 
 html, body {
@@ -283,5 +384,3 @@ html, body {
   padding: 0;
   background-color: $bg;
 }
-
-
